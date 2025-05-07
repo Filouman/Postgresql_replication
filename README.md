@@ -12,7 +12,6 @@
 
 ### SETUP
 
-
 ### 1. Set Up the Primary PostgreSQL Server
 
 Configure PostgreSQL for replication on the primary server.
@@ -57,7 +56,7 @@ Reload PostgreSQL
 sudo systemctl restart postgresql
 ```
 
-
+<br>
 
 ### 2. Set Up the Standby PostgreSQL Server
 
@@ -100,6 +99,8 @@ Start PostgreSQL on Standby server
 ```
 sudo systemctl start postgresql
 ```
+
+<br>
 
 ### 3. Monitoring and Testing
 After configuring, restart both PostgreSQL servers. The Primary server will wait for acknowledgment from the Standby before confirming a transaction commit.
