@@ -90,7 +90,7 @@ sudo systemctl start postgresql
 ### 3. Monitoring and Testing
 After configuring, restart both PostgreSQL servers. The primary server will wait for acknowledgment from the standby before confirming a transaction commit.
 
-You can monitor the PostgreSQL main instance by the systemd journal and check the log output. You can exit the monitoring at any time with 
+You can monitor the PostgreSQL main instance by the systemd journal and check the log output. You can exit the monitoring at any time with `Ctrl+C`
 ```
 journalctl -fu postgresql
 ```
@@ -105,6 +105,3 @@ On the primary, check replication status:
 SELECT pid, state, sync_state, application_name, client_addr
 FROM pg_stat_replication;
 ```
-
-### 4. Failover Setup
-For automatic failover, you can use tools like Patroni, pg_auto_failover, or repmgr to handle failover and promote the standby to primary if the primary goes offline.
