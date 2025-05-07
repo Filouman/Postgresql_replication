@@ -66,13 +66,13 @@ Stop PostgreSQL
 sudo systemctl stop postgresql
 ```
 
-Set the Connection Details in postgresql.conf
+Set the Connection Details in `postgresql.conf`
 Edit `/etc/postgresql/17/main/postgresql.conf` (adjust path as needed) and add:
 ```
 primary_conninfo = 'host=XXX.XXX.XXX.XX port=5432 user=replica_user password=your_password application_name=standby1'
 primary_slot_name = 'standby_slot1'
 ```
-* Adjust IP and port as needed to match connection details for the Primary server. Make sure the `application_name` matches the name in `synchronous_standby_names` on the Primary.
+*Adjust IP and port as needed to match connection details for the Primary server. Make sure the `application_name` matches the name in `synchronous_standby_names` on the Primary.
 
 
 Backup Existing Data Directory, Create New One, and Set Permissions:
@@ -87,7 +87,7 @@ Initialize Standby with Data from the Primary: On the Standby, use `pg_basebacku
 ```
 pg_basebackup -h XXX.XXX.XXX.XX -D /data/postgresdb/17 -U replica_user -P -Xs -R
 ```
-`-R` creates the standby.signal file and sets `primary_conninfo` automatically.
+`-R` creates the `standby.signal` file and sets `primary_conninfo` automatically.
 You’ll be prompted for the replication user’s password.
 
 Manually Add `standby.signal` File
