@@ -18,7 +18,7 @@ wal_level = replica
 synchronous_commit = remote_apply
 max_wal_senders = 5
 wal_keep_size = 2000
-synchronous_standby_names = 'standby'      # name must match application_name on standby server
+synchronous_standby_names = 'standby1'      # name must match application_name on standby server
 ```
 
 
@@ -54,14 +54,6 @@ Stop PostgreSQL
 sudo systemctl stop postgresql
 ```
 
-Backup Existing Data Directory, Create New One, and Set Permissions:
-```
-sudo mv /data/postgresdb/17/ /data/postgresdb/17.bak
-sudo mkdir /data/postgresdb/17/
-sudo chown postgres:postgres /data/postgresdb
-sudo chmod 700 /data/postgresdb
-```
-
 Set the Connection Details in postgresql.conf
 Edit `/etc/postgresql/17/main/postgresql.conf` (adjust path as needed) and add:
 ```
@@ -69,6 +61,15 @@ primary_conninfo = 'host=XXX.XXX.XXX.XX port=5432 user=replica_user password=you
 primary_slot_name = 'standby_slot1'
 ```
 Make sure the `application_name` matches the name in `synchronous_standby_names` on the primary.
+
+
+Backup Existing Data Directory, Create New One, and Set Permissions:
+```
+sudo mv /data/postgresdb/17/ /data/postgresdb/17.bak
+sudo mkdir /data/postgresdb/17/
+sudo chown postgres:postgres /data/postgresdb
+sudo chmod 700 /data/postgresdb
+```
 
 Initialize Standby with Data from the Primary: On the standby server, use pg_basebackup to create an initial copy of the primary database:
 ```
