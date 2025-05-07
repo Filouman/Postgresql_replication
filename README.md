@@ -1,25 +1,28 @@
-## Guide to Set up Postgresql synchronous replication
+## Guide to Set up PostgreSQL synchronous replication
 
 ### Requirements
-–Two servers: primary and standby
+- Two servers: primary and standby
 
-–PostgreSQL installed (same version) on both
+- PostgreSQL installed (same version) on both
 
+**Important:** Verify data directories, IP addresses, ports and adjust as needed.
+
+<br>
 
 
 ### SETUP
 
 
-### 1. Set Up the Primary PostgreSQL Database
+### 1. Set Up the Primary PostgreSQL Server
 
-Make sure PostgreSQL is configured for replication on the primary server.
+Configure PostgreSQL for replication on the primary server.
 
-Edit the PostgreSQL configuration file (postgresql.conf), usually located in `/etc/postgresql/xx/main/postgresql.conf` or a similar path.
+Edit the PostgreSQL configuration file (`postgresql.conf`), usually located in `/etc/postgresql/xx/main/postgresql.conf` or a similar path.
 ```
 sudo nano /etc/postgresql/17/main/postgresql.conf --linenumbers
 ```
 
-Enable WAL Archiving: Set the following in postgresql.conf to enable listening and ensure all transactions are logged for replication:
+Enable WAL Archiving: Set the following in `postgresql.conf` to enable listening and ensure all transactions are logged for replication:
 ```
 listen_addresses = '*'
 wal_level = replica
@@ -70,7 +73,7 @@ Edit `/etc/postgresql/17/main/postgresql.conf` (adjust path as needed) and add:
 primary_conninfo = 'host=XXX.XXX.XXX.XX port=5432 user=replica_user password=your_password application_name=standby1'
 primary_slot_name = 'standby_slot1'
 ```
-Make sure the `application_name` matches the name in `synchronous_standby_names` on the primary.
+* Adjust IP and port as needed to match connection details for the Primary server. Make sure the `application_name` matches the name in `synchronous_standby_names` on the Primary.
 
 
 Backup Existing Data Directory, Create New One, and Set Permissions:
@@ -81,7 +84,7 @@ sudo chown postgres:postgres /data/postgresdb
 sudo chmod 700 /data/postgresdb
 ```
 
-Initialize Standby with Data from the Primary: On the Standby server, use `pg_basebackup` to create an initial copy of the primary database:
+Initialize Standby with Data from the Primary: On the Standby, use `pg_basebackup` to create an initial copy of the primary database:
 ```
 pg_basebackup -h XXX.XXX.XXX.XX -D /data/postgresdb/17 -U replica_user -P -Xs -R
 ```
@@ -93,13 +96,13 @@ If `-R` wasn't used or you want to ensure it's there:
 ```
 sudo touch /data/postgresdb/17/standby.signal
 ```
-Start PostgreSQL on Standby
+Start PostgreSQL on Standby server
 ```
 sudo systemctl start postgresql
 ```
 
 ### 3. Monitoring and Testing
-After configuring, restart both PostgreSQL servers. The primary server will wait for acknowledgment from the standby before confirming a transaction commit.
+After configuring, restart both PostgreSQL servers. The Primary server will wait for acknowledgment from the Standby before confirming a transaction commit.
 
 You can monitor the PostgreSQL main instance by the systemd journal and check the log output. You can exit the monitoring at any time with `Ctrl+C`
 ```
@@ -111,7 +114,7 @@ Monitor Logs:
 sudo tail -f /var/log/postgresql/postgresql-17-main.log
 ```
 
-On the primary, check replication status:
+On the Primary, check replication status:
 ```
 SELECT pid, state, sync_state, application_name, client_addr
 FROM pg_stat_replication;
