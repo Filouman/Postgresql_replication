@@ -1,6 +1,14 @@
 ## Guide to Set up Postgresql synchronous replication
 
+### Requirements
+–Two servers: primary and standby
+
+–PostgreSQL installed (same version) on both
+
+
+
 ### SETUP
+
 
 ### 1. Set Up the Primary PostgreSQL Database
 
@@ -22,7 +30,7 @@ synchronous_standby_names = 'standby1'      # name must match application_name o
 ```
 
 
-Allow Replication Connections: In the pg_hba.conf file, allow the standby server to connect:
+Allow Replication Connections: In the `pg_hba.conf` file, allow the standby server to connect:
 ```
 sudo nano /etc/postgresql/17/main/pg_hba.conf --linenumbers
 ```
@@ -47,7 +55,9 @@ sudo systemctl restart postgresql
 ```
 
 
+
 ### 2. Set Up the Standby PostgreSQL Server
+
 
 Stop PostgreSQL
 ```
@@ -71,7 +81,7 @@ sudo chown postgres:postgres /data/postgresdb
 sudo chmod 700 /data/postgresdb
 ```
 
-Initialize Standby with Data from the Primary: On the standby server, use pg_basebackup to create an initial copy of the primary database:
+Initialize Standby with Data from the Primary: On the Standby server, use `pg_basebackup` to create an initial copy of the primary database:
 ```
 pg_basebackup -h XXX.XXX.XXX.XX -D /data/postgresdb/17 -U replica_user -P -Xs -R
 ```
