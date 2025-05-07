@@ -75,7 +75,7 @@ primary_slot_name = 'standby_slot1'
 *Adjust IP and port as needed to match connection details for the Primary server. Make sure the `application_name` matches the name in `synchronous_standby_names` on the Primary.
 
 
-Backup Existing Data Directory, Create New One, and Set Permissions:
+Backup Existing Data Directory, Create New Directory, and Set Permissions:
 ```
 sudo mv /data/postgresdb/17/ /data/postgresdb/17.bak
 sudo mkdir /data/postgresdb/17/
